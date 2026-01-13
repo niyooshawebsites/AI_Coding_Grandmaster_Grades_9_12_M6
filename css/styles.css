@@ -1,0 +1,20 @@
+body {
+  background: #f8f9fa;
+}
+.calculator {
+  max-width: 350px;
+  margin: 100px auto;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+.calculator button {
+  height: 60px;
+  font-size: 20px;
+}
+.calculator input {
+  height: 60px;
+  font-size: 24px;
+  text-align: right;
+}
