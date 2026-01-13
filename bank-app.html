@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Simple Bank App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Bootstrap 5.3 CDN -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+      .balance-card {
+        background: linear-gradient(135deg, #0d6efd, #084298);
+        color: white;
+      }
+      .credit {
+        color: green;
+        font-weight: bold;
+      }
+      .debit {
+        color: red;
+        font-weight: bold;
+      }
+      table th {
+        background-color: #e9ecef;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container py-4">
+      <h2 class="text-center mb-4">🏦 Simple Bank App</h2>
+
+      <!-- Balance Display -->
+      <div class="card balance-card mb-4">
+        <div class="card-body text-center">
+          <h4>Current Balance</h4>
+          <h2 id="balance">₹ 0.00</h2>
+        </div>
+      </div>
+
+      <!-- Transaction Form -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Debit / Credit Amount</h5>
+
+          <form id="transactionForm" class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">Transaction Type</label>
+              <select class="form-select" id="type" required>
+                <option value="">Select</option>
+                <option value="credit">Credit</option>
+                <option value="debit">Debit</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Amount</label>
+              <input
+                type="number"
+                class="form-control"
+                id="amount"
+                min="1"
+                required
+              />
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Comment</label>
+              <input
+                type="text"
+                class="form-control"
+                id="comment"
+                placeholder="e.g. Salary / Grocery"
+              />
+            </div>
+
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary">
+                Submit Transaction
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Passbook / Journal -->
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Bank Passbook</h5>
+
+          <div class="table-responsive">
+            <table class="table table-bordered align-middle">
+              <thead class="text-center">
+                <tr>
+                  <th>Date</th>
+                  <th>Type</th>
+                  <th>Amount</th>
+                  <th>Balance</th>
+                  <th>Comment</th>
+                </tr>
+              </thead>
+              <tbody id="passbook">
+                <tr class="text-center text-muted">
+                  <td colspan="5">No transactions yet</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+      let balance = 0;
+      const balanceEl = document.getElementById("balance");
+      const passbook = document.getElementById("passbook");
+      const form = document.getElementById("transactionForm");
+
+      function updateBalance() {
+        balanceEl.textContent = `₹ ${balance.toFixed(2)}`;
+      }
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const type = document.getElementById("type").value;
+        const amount = parseFloat(document.getElementById("amount").value);
+        const comment = document.getElementById("comment").value || "-";
+
+        if (type === "debit" && amount > balance) {
+          alert("Insufficient balance!");
+          return;
+        }
+
+        // Update balance
+        if (type === "credit") {
+          balance += amount;
+        } else {
+          balance -= amount;
+        }
+
+        updateBalance();
+
+        // Remove "No transactions" row
+        if (
+          passbook.children.length === 1 &&
+          passbook.children[0].cells.length === 1
+        ) {
+          passbook.innerHTML = "";
+        }
+
+        // Create row
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${new Date().toLocaleString()}</td>
+            <td class="${type} text-capitalize">${type}</td>
+            <td class="${type}">₹ ${amount.toFixed(2)}</td>
+            <td>₹ ${balance.toFixed(2)}</td>
+            <td>${comment}</td>
+        `;
+
+        passbook.prepend(row);
+        form.reset();
+      });
+
+      updateBalance();
+    </script>
+  </body>
+</html>
